@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Jellyfin Pro Downloader</title>
+</head>
+<body>
+    <div id="ProDownloaderConfigPage" data-role="page" class="page type-interior pluginConfigurationPage" data-require="emby-input,emby-button,emby-checkbox">
+        <div data-role="content">
+            <div class="content-primary">
+                <form id="ProDownloaderConfigForm">
+                    <div class="verticalSection">
+                        <h2 class="sectionTitle">Jellyfin Pro Downloader</h2>
+                        <p>
+                            « Télécharger » sur une série, une saison, un album, un artiste, une collection, une playlist ou un dossier ouvre une
+                            <b>fenêtre de sélection</b> au lieu de lancer tous les téléchargements d'un coup. Un <b>gestionnaire de téléchargements</b>
+                            (icône <span class="material-icons" style="vertical-align:middle">file_download</span> en haut à droite) suit la progression.
+                            Un film ou un épisode seul se télécharge directement.
+                        </p>
+                        <p>
+                            <i>"Download" on a series, season, album, artist, collection, playlist or folder opens a <b>picker</b> instead of starting every
+                            download at once. A <b>download manager</b> (download icon at the top right) tracks progress. A single movie or episode downloads directly.</i>
+                        </p>
+                    </div>
+
+                    <div class="checkboxContainer checkboxContainer-withDescription">
+                        <label class="emby-checkbox-label">
+                            <input id="chkEnabled" type="checkbox" is="emby-checkbox" />
+                            <span>Activer / Enable</span>
+                        </label>
+                        <div class="fieldDescription checkboxFieldDescription">
+                            Décocher rend au client web son téléchargement d'origine. Effet au prochain rechargement de la page (Ctrl+F5).
+                            <i>Unchecking restores the web client's original download. Takes effect on the next page reload.</i>
+                        </div>
+                    </div>
+
+                    <h3 class="sectionTitle">Modes / Modes</h3>
+                    <div class="checkboxContainer checkboxContainer-withDescription">
+                        <label class="emby-checkbox-label">
+                            <input id="chkFolder" type="checkbox" is="emby-checkbox" />
+                            <span>Dossier / Folder</span>
+                        </label>
+                        <div class="fieldDescription checkboxFieldDescription">
+                            Fichiers rangés dans un dossier choisi par l'utilisateur. Chrome, Edge ou Opera sur ordinateur, et une adresse en HTTPS (ou localhost).
+                            <i>Files organized in a folder chosen by the user. Chrome, Edge or Opera on a computer, over HTTPS (or localhost).</i>
+                        </div>
+                    </div>
+                    <div class="checkboxContainer checkboxContainer-withDescription">
+                        <label class="emby-checkbox-label">
+                            <input id="chkQueue" type="checkbox" is="emby-checkbox" />
+                            <span>File d'attente / Queue</span>
+                        </label>
+                        <div class="fieldDescription checkboxFieldDescription">
+                            Le navigateur télécharge les fichiers un par un. Tous les navigateurs. Toujours disponible si aucun autre mode ne l'est.
+                            <i>The browser downloads files one by one. Any browser. Always available when no other mode is.</i>
+                        </div>
+                    </div>
+                    <div class="checkboxContainer checkboxContainer-withDescription">
+                        <label class="emby-checkbox-label">
+                            <input id="chkZip" type="checkbox" is="emby-checkbox" />
+                            <span>ZIP</span>
+                        </label>
+                        <div class="fieldDescription checkboxFieldDescription">
+                            Archive générée à la volée, sans compression (presque pas de CPU) ni fichier temporaire, avec reprise.
+                            <i>Archive generated on the fly, without compression (almost no CPU) or temporary file, resumable.</i>
+                        </div>
+                    </div>
+
+                    <h3 class="sectionTitle">Limites / Limits</h3>
+                    <div class="inputContainer">
+                        <input is="emby-input" type="number" id="txtPerUser" min="1" max="10" label="Téléchargements simultanés par utilisateur / Simultaneous downloads per user" />
+                        <div class="fieldDescription">1 à 10. Défaut : 2. / 1 to 10. Default: 2.</div>
+                    </div>
+                    <div class="inputContainer">
+                        <input is="emby-input" type="number" id="txtTotal" min="0" max="1000" label="Téléchargements simultanés au total / Simultaneous downloads in total" />
+                        <div class="fieldDescription">0 = illimité. / 0 = unlimited.</div>
+                    </div>
+                    <div class="inputContainer">
+                        <input is="emby-input" type="number" id="txtSpeed" min="0" max="100000" label="Débit maximum par utilisateur (Mbit/s) / Max speed per user (Mbit/s)" />
+                        <div class="fieldDescription">
+                            0 = illimité. Utile si votre connexion montante est modeste : les autres utilisateurs peuvent continuer à regarder en streaming.
+                            <i>0 = unlimited. Useful with a modest upload speed, so other users can keep streaming.</i>
+                        </div>
+                    </div>
+                    <div class="inputContainer">
+                        <input is="emby-input" type="number" id="txtExpire" min="1" max="1440" label="Expiration des liens (heures sans activité) / Link expiry (hours of inactivity)" />
+                        <div class="fieldDescription">Défaut : 72. / Default: 72.</div>
+                    </div>
+
+                    <div class="verticalSection">
+                        <p id="ProDownloaderStatus" class="fieldDescription"></p>
+                    </div>
+
+                    <div>
+                        <button is="emby-button" type="submit" class="raised button-submit block emby-button">
+                            <span>Enregistrer / Save</span>
+                        </button>
+                    </div>
+
+                    <div class="verticalSection">
+                        <p class="fieldDescription">
+                            Les téléchargements respectent le droit « Autoriser le téléchargement » de chaque utilisateur
+                            (Tableau de bord → Utilisateurs). / Downloads follow each user's "Allow media downloading" permission.
+                        </p>
+                        <p class="fieldDescription">
+                            Source, issues : <a is="emby-linkbutton" class="button-link" href="https://github.com/k1k4k/jellyfin-pro-downloader" target="_blank" rel="noopener">github.com/k1k4k/jellyfin-pro-downloader</a>
+                        </p>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <script type="text/javascript">
+            (function () {
+                var pluginId = '114272b4-a63b-4036-84be-843fc6552d61';
+                var page = document.querySelector('#ProDownloaderConfigPage');
+
+                function q(sel) { return page.querySelector(sel); }
+
+                function loadStatus() {
+                    var el = q('#ProDownloaderStatus');
+                    ApiClient.fetch({ url: ApiClient.getUrl('ProDownloader/Status'), type: 'GET', dataType: 'json' })
+                        .then(function (s) {
+                            el.textContent = 'Version ' + s.version + ' — ' + (s.enabled ? 'actif / enabled' : 'inactif / disabled')
+                                + ' — ' + s.activeTransfers + ' envoi(s) en cours / active transfer(s) — ' + s.jobs + ' tâche(s) / job(s)';
+                        })
+                        .catch(function () { el.textContent = ''; });
+                }
+
+                function int(sel, min, max, fallback) {
+                    var v = parseInt(q(sel).value, 10);
+                    if (isNaN(v)) return fallback;
+                    return Math.min(max, Math.max(min, v));
+                }
+
+                page.addEventListener('pageshow', function () {
+                    Dashboard.showLoadingMsg();
+                    ApiClient.getPluginConfiguration(pluginId).then(function (c) {
+                        q('#chkEnabled').checked = c.Enabled !== false;
+                        q('#chkFolder').checked = c.AllowFolderMode !== false;
+                        q('#chkQueue').checked = c.AllowQueueMode !== false;
+                        q('#chkZip').checked = c.AllowZipMode !== false;
+                        q('#txtPerUser').value = c.MaxConcurrentPerUser || 2;
+                        q('#txtTotal').value = c.MaxConcurrentTotal || 0;
+                        q('#txtSpeed').value = c.MaxSpeedPerUserMbps || 0;
+                        q('#txtExpire').value = c.JobExpirationHours || 72;
+                        Dashboard.hideLoadingMsg();
+                        loadStatus();
+                    });
+                });
+
+                q('#ProDownloaderConfigForm').addEventListener('submit', function (e) {
+                    e.preventDefault();
+                    Dashboard.showLoadingMsg();
+                    ApiClient.getPluginConfiguration(pluginId).then(function (c) {
+                        c.Enabled = q('#chkEnabled').checked;
+                        c.AllowFolderMode = q('#chkFolder').checked;
+                        c.AllowQueueMode = q('#chkQueue').checked;
+                        c.AllowZipMode = q('#chkZip').checked;
+                        c.MaxConcurrentPerUser = int('#txtPerUser', 1, 10, 2);
+                        c.MaxConcurrentTotal = int('#txtTotal', 0, 1000, 0);
+                        c.MaxSpeedPerUserMbps = int('#txtSpeed', 0, 100000, 0);
+                        c.JobExpirationHours = int('#txtExpire', 1, 1440, 72);
+                        ApiClient.updatePluginConfiguration(pluginId, c).then(function (result) {
+                            Dashboard.processPluginConfigurationUpdateResult(result);
+                            loadStatus();
+                        });
+                    });
+                    return false;
+                });
+            })();
+        </script>
+    </div>
+</body>
+</html>
